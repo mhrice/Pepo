@@ -5,6 +5,8 @@ import './App.css';
 import GChart from './components/GChart';
 import * as firebase from "firebase";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import RaisedButton from 'material-ui/RaisedButton';
+import graph from 'fb-react-sdk';
 
 var config = {
   apiKey: "AIzaSyBc9VGjprDNigBP-2TUAai1wpfmH9cqhBU",
@@ -35,19 +37,47 @@ let data = [
 
 class App extends Component {
 
+constructor(props){
+  super(props);
+  this.state = {loggedIn: false};
+  this.login = this.login.bind(this);
+}
+
 
  login(){
    var provider = new firebase.auth.FacebookAuthProvider();
-
-   firebase.auth().signInWithPopup(provider).then(function(result) {
+provider.addScope('user_friends');
+   firebase.auth().signInWithPopup(provider).then((result)=> {
   // This gives you a Facebook Access Token.
   var token = result.credential.accessToken;
   // The signed-in user info.
   var user = result.user;
-  return <GChart />
+
+  console.log(result);
+
+  this.setState({
+    loggedIn: true
+  });
+  var uid = user.uid;
+graph.setAccessToken(token);
+graph.get(`/me/friends`, function(err, res) {
+        // returns the post id
+        console.log(res); // { id: xxxxx}
+    });
+
 }).catch((e)=>{
-  window.location.href = "https://www.google.com"
+  console.log(e);
+  window.location.href = "https://www.google.com";
 });
+ }
+
+ renderGraph(){
+   if(this.state.loggedIn){
+     return <GChart />
+   }
+   else {
+    return <RaisedButton label="Log In" primary={true} onClick={this.login} />
+   }
  }
 
 
@@ -55,7 +85,7 @@ class App extends Component {
     return (
       <MuiThemeProvider>
       <div className="App">
-      {this.login()}
+      {this.renderGraph()}
       </div>
       </MuiThemeProvider>
     );
