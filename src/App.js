@@ -7,6 +7,7 @@ import * as firebase from "firebase";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import graph from 'fb-react-sdk';
+// import * as twilio from './components/twilio_init';
 
 var config = {
   apiKey: "AIzaSyBc9VGjprDNigBP-2TUAai1wpfmH9cqhBU",
@@ -63,7 +64,9 @@ graph.setAccessToken(token);
 graph.get(`/me/friends`, function(err, res) {
         // returns the post id
         console.log(res); // { id: xxxxx}
-    });
+});
+
+
 
 }).catch((e)=>{
   console.log(e);
