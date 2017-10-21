@@ -1,0 +1,15 @@
+.circle-container {
+  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content:center;
+  align-items: center;
+  flex-wrap: wrap;
+  background: radial-gradient(circle, hsl(210, 91%, 72%),hsl(219, 86%, 55%), hsl(236, 86%, 55%));
+}
+.circle-text {
+  /*border: 2px solid red;*/
+
+}
