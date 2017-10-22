@@ -57,6 +57,9 @@ class App extends Component {
 
   updateUserLocation(user, fb_id)
   {
+    this.setState({
+      renderEngineReady: false
+    });
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
         var geohash = Geohash.encode(position.coords.latitude, position.coords.longitude, this.precision);
@@ -167,9 +170,7 @@ class App extends Component {
       return <RaisedButton label="Log In" primary={true} onClick={this.login}/>
     }
   }
-  componentWillUnmount() {
-    // this.logout;
-  }
+
   render() {
     let button = null;
     let theGraph = null;
@@ -188,6 +189,7 @@ class App extends Component {
       chat = <div></div>;
       button = <RaisedButton label="Log In" primary={true} onClick={this.login} className="login"/>
       close = null;
+
       // theGraph = <RenderEngine previoushash = {this.state.prevHash} />
       theGraph = null;
 
