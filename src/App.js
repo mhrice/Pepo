@@ -38,7 +38,23 @@ class App extends Component {
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.renderGraph = this.renderGraph.bind(this);
+
+    this.onUnload = this.onUnload.bind(this); // if you need to bind callback to this
   }
+
+  onUnload(event) { // the method that will be used for both add and remove event
+    this.logout();
+    event.returnValue = "unload"
+  }
+
+  componentDidMount() {
+    window.addEventListener("beforeunload", this.onUnload)
+  }
+
+  componentWillMount() {
+    window.removeEventListener("beforeunload", this.onUnload)
+  }
+
   updateUserFriends(friendsArray) {
     // var ref = firebase.database().ref();
     // var fanoutObject = {};
@@ -99,7 +115,7 @@ class App extends Component {
   {
     if (this.state.prevHash)
       firebase.database().ref('/geohashes/' + this.state.prevHash + '/' + this.state.uid).remove();
-    }
+  }
 
   login() {
     var provider = new firebase.auth.FacebookAuthProvider();
@@ -151,7 +167,7 @@ class App extends Component {
 
   logout() {
     this.removeUserLocation();
-    this.setState({loggedIn: false, prevHash: null, uid: ""})
+    this.setState({loggedIn: false, prevHash: null, uid: "", renderEngineReady: 0})
     firebase.auth().signOut().then(() => {
 
       // Sign-out successful.
@@ -192,8 +208,7 @@ class App extends Component {
 
       // theGraph = <RenderEngine previoushash = {this.state.prevHash} />
       theGraph = null;
-
-  }
+    }
 
     return (
       <MuiThemeProvider>

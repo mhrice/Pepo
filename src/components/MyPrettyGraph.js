@@ -4,9 +4,6 @@ import Graph from 'react-graph-vis';
 import '../styles/graph.css';
 import * as firebase from "firebase";
 
-
-
-
 const options = {
   layout: {
     hierarchical: false
@@ -17,7 +14,6 @@ const options = {
         enabled: false,
 
       },
-
     },
     width: 20,
     color: "#000000",
@@ -60,70 +56,65 @@ const events = {
 };
 
 export default class MyPrettyGraph extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = { nodes: [], edges:[], renderReady: false, graph: {} }
     // this.renderGraph = this.renderGraph.bind(this);
   }
-  componentWillMount(){
+
+  componentWillMount() {
     const colors = ["#e23b3b", "#e09c41", "#e0df41", "7be041", "#41e0c9"];
     firebase.database().ref(`/geohashes/${this.props.previoushash}`).on('value',(snapshot)=>{
       snapshot.forEach((child)=>{
         var val = child.val();
         var id = Number(val.fb_id);
         var num_friends = val.num_friends;
+        var profile_pic = val.profile_pic;
         let size = num_friends / 300 * 30+5;
         var labelString = `${val.name}\n Friends: ${num_friends}`;
         this.state.nodes.push({
           id: id,
           label: labelString,
           color: colors[id%5],
-          size: size
+          size: size,
+          image: profile_pic
         });
       });
 
-      snapshot.forEach((child)=>{
+      snapshot.forEach((child) => {
         var friends = child.child('friends');
 
-        friends.forEach((friend)=>{
+        friends.forEach((friend) => {
           var key = friend.key;
 
-
-              this.state.edges.push({
-                from: Number(child.val().fb_id),
-                to: Number(key)
-              });
-              setTimeout(()=>{
-              }, 1000)
+          this.state.edges.push({
+            from: Number(child.val().fb_id),
+            to: Number(key)
+          });
         });
       });
+
       this.setState({
         renderReady: true
       })
     });
   }
-  render(){
+
+  render() {
     let theGraph = null;
-    // this.state.edges.push({to: 80, from: 1505097026239202})
     this.state.edges.push({});
     if(this.state.renderReady){
-      theGraph=null;
-        let graph = {
-          nodes:this.state.nodes,
-          edges: this.state.edges
-        }
-
-        theGraph = <Graph graph={graph} options={options} events={events} />
-      // console.log(graph.edges)
+      let graph = {
+        nodes:this.state.nodes,
+        edges: this.state.edges
+      }
+      theGraph = <Graph graph={graph} options={options} events={events} />
     }
-    return(
 
+    return(
       <div className="graph-container">
-    {theGraph}
+        {theGraph}
       </div>
     );
-
-
-
   }
 }
