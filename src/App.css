@@ -1,8 +1,9 @@
 .App {
   text-align: center;
-  display: flex;
-  flex-direction: column;
+
   min-height: 100vh;
+
+
 }
 
 .App-logo {
@@ -32,22 +33,65 @@
 
 .Title {
   margin-top: 1%;
+  padding-bottom: 1%;
   font-family: 'Comfortaa', cursive;
   font-size: 30px;
   color: green;
+  /*flex: 1;*/
+
 }
 .graph-title {
   font-family: 'Comfortaa', cursive;
   font-size: 16px;
 }
 .login {
+  align-self: center;
   position: absolute;
-  top: 50vh;
-  left: 46%;
+  /*left: 50%;*/
+  /*right: 50%;*/
 }
 .logout {
-  
+  position: absolute;
+
 }
 body {
     overflow:hidden;
+}
+.title-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /*border: 2px solid red;*/
+
+}
+
+.close {
+  /*border: 2px solid red;*/
+  align-self: center;
+  /*margin-left: 20%;*/
+  position: absolute;
+  left: 40%;
+}
+
+.body-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80%;
+}
+.button-div {
+position: absolute;
+left: 46.5%;
+top: 50%
+
+}
+.chat-container {
+  min-height: 5%;
+  padding-bottom: 10px;
+  max-height: 10%;
+  display: flex;
+  flex-direction: column;
+
 }

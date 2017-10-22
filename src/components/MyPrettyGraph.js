@@ -45,8 +45,8 @@ const options = {
   interaction: {
     hover: true
   },
-  height: '800px',
-  width: '100%'
+  height: '400px',
+  width: '1250px'
 };
 
 const events = {
@@ -73,11 +73,13 @@ export default class MyPrettyGraph extends React.Component {
         var val = child.val();
         var id = Number(val.fb_id);
         var num_friends = val.num_friends;
+        let size = num_friends / 300 * 30+5;
         var labelString = `${val.name}\n Friends: ${num_friends}`;
         this.state.nodes.push({
           id: id,
           label: labelString,
-          color: colors[id%5]
+          color: colors[id%5],
+          size: size
         });
       });
 
@@ -120,9 +122,8 @@ export default class MyPrettyGraph extends React.Component {
           nodes:this.state.nodes,
           edges: this.state.edges
         }
-        
+
         theGraph = <Graph graph={graph} options={options} events={events} />
-        console.log("5")
         ready = 1
       // console.log(graph.edges)
     }

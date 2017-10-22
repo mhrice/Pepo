@@ -9,9 +9,12 @@ import RaisedButton from 'material-ui/RaisedButton';
 import graph from 'fb-react-sdk';
 import Geohash from 'latlon-geohash';
 import Beforeunload from 'react-beforeunload';
+import Close from 'material-ui/svg-icons/navigation/close';
+import IconButton from 'material-ui/IconButton';
 // import Game_Vis from './components/Game_Vis';
 // import RenderEngine from './components/RenderEngine';
 import MyPrettyGraph from './components/MyPrettyGraph';
+import ChatInterface from './components/ChatInterface';
 
 var config = {
   apiKey: "AIzaSyBc9VGjprDNigBP-2TUAai1wpfmH9cqhBU",
@@ -195,32 +198,44 @@ class App extends Component {
   render() {
     let button = null;
     let theGraph = null;
+    let close = null;
+    let chat = null;
     const isLoggedIn = this.state.loggedIn;
     if (isLoggedIn) {
-      button = <RaisedButton label="Log Out" primary={true} onClick={this.logout}/>
-      // theGraph = (
-      //   <div>
-      //   <h1 className="graph-title">Nearby Pepo</h1>
-      // <RenderEngine previoushash = {this.state.prevHash} />
-      // </div>
-      // )
+      chat = <ChatInterface />
+      button = null;
+      close = <IconButton tooltip="Close" className="close" onClick={this.logout} ><Close hoverColor={'red'} /></IconButton>
+      if(this.state.renderEngineReady){
+        theGraph = <MyPrettyGraph previoushash = {this.state.prevHash} />
+        // this.setState(titleStyle: 'float:left')
+      }
     } else {
+      chat = <div></div>;
       button = <RaisedButton label="Log In" primary={true} onClick={this.login} className="login"/>
+      close = null;
       // theGraph = <RenderEngine previoushash = {this.state.prevHash} />
-    }
-    if(this.state.renderEngineReady){
-      theGraph = <MyPrettyGraph previoushash = {this.state.prevHash} />
-      // this.setState(titleStyle: 'float:left')
-    }
+      theGraph = null;
+
+  }
 
     return (
       <MuiThemeProvider>
         <div className="App">
+        <div className="title-container">
         <div className="Title">
         Pepo
+          </div>
+                {close}
         </div>
-          {button}
+        <div className = "button-div">
+        {button}
+        </div>
+        <div className="body-container">
+
           {theGraph}
+      </div>
+
+        {chat}
 
         </div>
       </MuiThemeProvider>
