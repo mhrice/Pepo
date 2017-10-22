@@ -15,7 +15,7 @@ const options = {
 
       },
     },
-    width: 20,
+    width: 1,
     color: "#000000",
     font:{
       face: 'Montserrat',
@@ -93,6 +93,26 @@ export default class MyPrettyGraph extends React.Component {
           });
         });
       });
+
+      console.log("Before filter: ", this.state.edges);
+
+      this.setState({edges: this.state.edges.filter((edge, index, array) =>
+        {
+          for(let i = index + 1; i < array.length; i++) {
+            let otherEdge = array[i];
+            console.log(edge.to === otherEdge.from && edge.from === otherEdge.to);
+            if((edge.to === otherEdge.from &&
+                edge.from === otherEdge.to) ||
+               (edge.to === otherEdge.to &&
+                edge.from === otherEdge.from)) {
+              return false;
+            }
+          }
+          return true;
+        })
+      });
+
+      console.log("After filter: ", this.state.edges);
 
       this.setState({
         renderReady: true
