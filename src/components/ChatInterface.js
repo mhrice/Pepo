@@ -19,9 +19,6 @@ export default class ChatInterface extends React.Component {
       };
     }
 
-    array.filter((element, index)=>{
-        return true/false
-    })
 componentDidMount(){
   let token, name;
   axios.post('http://localhost:3003/token').then((res)=>{
