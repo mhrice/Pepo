@@ -66,7 +66,6 @@ export default class MyPrettyGraph extends React.Component {
     // this.renderGraph = this.renderGraph.bind(this);
   }
   componentWillMount(){
-    console.log("CALLED")
     const colors = ["#e23b3b", "#e09c41", "#e0df41", "7be041", "#41e0c9"];
     firebase.database().ref(`/geohashes/${this.props.previoushash}`).on('value',(snapshot)=>{
       snapshot.forEach((child)=>{
@@ -89,34 +88,25 @@ export default class MyPrettyGraph extends React.Component {
         friends.forEach((friend)=>{
           var key = friend.key;
 
-          console.log(key);
-          // this.state.nodes.forEach((node)=>{
 
               this.state.edges.push({
                 from: Number(child.val().fb_id),
                 to: Number(key)
               });
               setTimeout(()=>{
-                console.log("WAIT");
-              }, 5000)
-          // });
+              }, 1000)
         });
       });
       this.setState({
         renderReady: true
       })
     });
-  // console.log(this.state.edges);
-  // console.log(this.state.nodes);
   }
   render(){
-    let ready = 0
-    console.log("RENDER");
     let theGraph = null;
     // this.state.edges.push({to: 80, from: 1505097026239202})
     this.state.edges.push({});
     if(this.state.renderReady){
-      console.log("HI")
       theGraph=null;
         let graph = {
           nodes:this.state.nodes,
@@ -124,7 +114,6 @@ export default class MyPrettyGraph extends React.Component {
         }
 
         theGraph = <Graph graph={graph} options={options} events={events} />
-        ready = 1
       // console.log(graph.edges)
     }
     return(
@@ -133,10 +122,7 @@ export default class MyPrettyGraph extends React.Component {
     {theGraph}
       </div>
     );
-    setTimeout(()=>{
-      this.forceUpdate();
 
-    }, 5000)
 
 
   }
