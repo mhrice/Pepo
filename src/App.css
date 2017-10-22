@@ -2,6 +2,7 @@
   text-align: center;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 }
 
 .App-logo {
@@ -27,4 +28,26 @@
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+.Title {
+  margin-top: 1%;
+  font-family: 'Comfortaa', cursive;
+  font-size: 30px;
+  color: green;
+}
+.graph-title {
+  font-family: 'Comfortaa', cursive;
+  font-size: 16px;
+}
+.login {
+  position: absolute;
+  top: 50vh;
+  left: 46%;
+}
+.logout {
+  
+}
+body {
+    overflow:hidden;
 }

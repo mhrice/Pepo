@@ -2,13 +2,16 @@ import React, {Component} from 'react';
 import logo from './logo.svg';
 import './App.css';
 // import UserCircle from './components/UserCircle';
-// import GChart from './components/GChart';
+import GChart from './components/GChart';
 import * as firebase from "firebase";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import graph from 'fb-react-sdk';
 import Geohash from 'latlon-geohash';
 import Beforeunload from 'react-beforeunload';
+// import Game_Vis from './components/Game_Vis';
+// import RenderEngine from './components/RenderEngine';
+import MyPrettyGraph from './components/MyPrettyGraph';
 
 var config = {
   apiKey: "AIzaSyBc9VGjprDNigBP-2TUAai1wpfmH9cqhBU",
@@ -44,7 +47,9 @@ class App extends Component {
       loggedIn: false,
       prevHash: null,
       uid: "",
-      friendsArray: null
+      friendsArray: null,
+      num_friends: 0,
+      renderEngineReady: false
     };
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
@@ -78,13 +83,15 @@ class App extends Component {
           var ref = firebase.database().ref();
           var fanoutObject = {};
 
-          if (this.state.prevHash) 
+          if (this.state.prevHash)
             fanoutObject['/geohashes/' + this.state.prevHash + '/' + this.state.uid] = null;
+
           fanoutObject['/geohashes/' + geohash + '/' + this.state.uid] = {
             name: user.displayName,
             profile_pic: user.photoURL,
             fb_id: fb_id,
-            friends: this.state.friendsArray
+            friends: this.state.friendsArray,
+            num_friends: this.state.num_friends
           };
           fanoutObject['/users/' + this.state.uid + '/geohash'] = geohash;
           // Store geohash
@@ -92,7 +99,9 @@ class App extends Component {
 
           // atomic update
           ref.update(fanoutObject);
+            this.setState({renderEngineReady: true})
         }
+
       }, (err) => {
         // error handling here
         console.log("Geolocation error");
@@ -102,10 +111,10 @@ class App extends Component {
 
   removeUserLocation()
   {
-    if (this.state.prevHash) 
+    if (this.state.prevHash)
       firebase.database().ref('/geohashes/' + this.state.prevHash + '/' + this.state.uid).remove();
     }
-  
+
   login() {
     var provider = new firebase.auth.FacebookAuthProvider();
     provider.addScope('user_friends');
@@ -136,7 +145,7 @@ class App extends Component {
         });
         console.log("Hi")
         console.log(friendsObject)
-        this.setState({friendsArray: friendsObject});
+        this.setState({friendsArray: friendsObject, num_friends: num_friends});
         this.updateUserLocation(result.user, fb_id);
         // this.updateUserFriends(friendsArray);
         setTimeout(() => {
@@ -150,6 +159,7 @@ class App extends Component {
         }, 1000);
 
       });
+
 
     }).catch((e) => {
       console.log(e);
@@ -184,17 +194,33 @@ class App extends Component {
   }
   render() {
     let button = null;
+    let theGraph = null;
     const isLoggedIn = this.state.loggedIn;
     if (isLoggedIn) {
       button = <RaisedButton label="Log Out" primary={true} onClick={this.logout}/>
+      // theGraph = (
+      //   <div>
+      //   <h1 className="graph-title">Nearby Pepo</h1>
+      // <RenderEngine previoushash = {this.state.prevHash} />
+      // </div>
+      // )
     } else {
-      button = <RaisedButton label="Log In" primary={true} onClick={this.login}/>
+      button = <RaisedButton label="Log In" primary={true} onClick={this.login} className="login"/>
+      // theGraph = <RenderEngine previoushash = {this.state.prevHash} />
+    }
+    if(this.state.renderEngineReady){
+      theGraph = <MyPrettyGraph previoushash = {this.state.prevHash} />
+      // this.setState(titleStyle: 'float:left')
     }
 
     return (
       <MuiThemeProvider>
         <div className="App">
+        <div className="Title">
+        Pepo
+        </div>
           {button}
+          {theGraph}
 
         </div>
       </MuiThemeProvider>
