@@ -31,43 +31,28 @@ componentDidMount(){
 }
 clientInitiated = () => {
     this.setState({ chatReady: true }, () => {
-      var location = this.props.location.toString();
-      this.chatClient.getPublicChannelDescriptors().then((paginator)=>{
-        console.log(paginator)
-  for (let i=0; i<paginator.items.length; i++) {
-    var channel = paginator.items[i];
-    console.log("CHANNELS")
-    if(location === channel.uniqueName){
-      return channel.getChannel();
-    }
-  }
-})
-  .then(channel => {
-    if (channel) {
-      console.log("YO");
-      console.log(channel.uniqueName)
-
-      return (this.channel = channel);
-    } else {
-      console.log("SUP")
-      console.log(channel.uniqueName)
-      return this.chatClient.createChannel({
-        uniqueName: location
-      });
-    }
-  })
-        .then(channel => {
-          this.channel = channel;
-          window.channel = channel;
-          console.log(this.channel);
-          return this.channel.join();
-        })
-        .then(() => {
-          this.channel.getMessages().then(this.messagesLoaded);
-          this.channel.on('messageAdded', this.messageAdded);
-        });
-    });
-  };
+      this.chatClient
+              .getChannelByUniqueName('general')
+              .then(channel => {
+                if (channel) {
+                  return (this.channel = channel);
+                } else {
+                  return this.chatClient.createChannel({
+                    uniqueName: 'general'
+                  });
+                }
+              })
+              .then(channel => {
+                this.channel = channel;
+                window.channel = channel;
+                return this.channel.join();
+              })
+              .then(() => {
+                this.channel.getMessages().then(this.messagesLoaded);
+                this.channel.on('messageAdded', this.messageAdded);
+              });
+          });
+        };
   messagesLoaded = messagePage => {
       this.setState({ messages: messagePage.items });
     };

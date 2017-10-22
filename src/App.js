@@ -80,6 +80,7 @@ class App extends Component {
       navigator.geolocation.getCurrentPosition((position) => {
         var geohash = Geohash.encode(position.coords.latitude, position.coords.longitude, this.precision);
         console.log(position.coords.latitude, position.coords.longitude);
+        geohash = "9mudgb0yue6p";
         if (geohash !== this.state.prevHash) {
           // fan out geohash change
           var ref = firebase.database().ref();
