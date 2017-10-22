@@ -4,9 +4,6 @@ import Graph from 'react-graph-vis';
 import '../styles/graph.css';
 import * as firebase from "firebase";
 
-
-
-
 const options = {
   layout: {
     hierarchical: false
@@ -17,7 +14,6 @@ const options = {
         enabled: false,
 
       },
-
     },
     width: 20,
     color: "#000000",
@@ -85,14 +81,11 @@ export default class MyPrettyGraph extends React.Component {
         });
       });
 
-      snapshot.forEach((child)=>{
+      snapshot.forEach((child) => {
         var friends = child.child('friends');
 
-        friends.forEach((friend)=>{
+        friends.forEach((friend) => {
           var key = friend.key;
-
-          console.log(key);
-          // this.state.nodes.forEach((node)=>{
 
           this.state.edges.push({
             from: Number(child.val().fb_id),
@@ -100,27 +93,24 @@ export default class MyPrettyGraph extends React.Component {
           });
         });
       });
+
       this.setState({
         renderReady: true
       })
     });
-  // console.log(this.state.edges);
-  // console.log(this.state.nodes);
   }
+
   render() {
-    console.log("Render");
     let theGraph = null;
-    // this.state.edges.push({to: 80, from: 1505097026239202})
     this.state.edges.push({});
     if(this.state.renderReady){
-      console.log("Render-Ready")
-        let graph = {
-          nodes:this.state.nodes,
-          edges: this.state.edges
-        }
-        theGraph = <Graph graph={graph} options={options} events={events} />
-      // console.log(graph.edges)
+      let graph = {
+        nodes:this.state.nodes,
+        edges: this.state.edges
+      }
+      theGraph = <Graph graph={graph} options={options} events={events} />
     }
+
     return(
       <div className="graph-container">
         {theGraph}

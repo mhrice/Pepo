@@ -15,7 +15,7 @@ export default class ChatInterface extends React.Component {
         chatReady: false,
         messages: [],
         newMessage: '',
-        name: ''
+        name: '',
       };
     }
 componentDidMount(){
@@ -30,20 +30,35 @@ componentDidMount(){
 }
 clientInitiated = () => {
     this.setState({ chatReady: true }, () => {
-      this.chatClient
-        .getChannelByUniqueName('general')
-        .then(channel => {
-          if (channel) {
-            return (this.channel = channel);
-          } else {
-            return this.chatClient.createChannel({
-              uniqueName: 'general'
-            });
-          }
-        })
+      var location = this.props.location.toString();
+      this.chatClient.getPublicChannelDescriptors().then((paginator)=>{
+        console.log(paginator)
+  for (let i=0; i<paginator.items.length; i++) {
+    var channel = paginator.items[i];
+    console.log("CHANNELS")
+    if(location === channel.uniqueName){
+      return channel.getChannel();
+    }
+  }
+})
+  .then(channel => {
+    if (channel) {
+      console.log("YO");
+      console.log(channel.uniqueName)
+
+      return (this.channel = channel);
+    } else {
+      console.log("SUP")
+      console.log(channel.uniqueName)
+      return this.chatClient.createChannel({
+        uniqueName: location
+      });
+    }
+  })
         .then(channel => {
           this.channel = channel;
           window.channel = channel;
+          console.log(this.channel);
           return this.channel.join();
         })
         .then(() => {
@@ -71,6 +86,7 @@ clientInitiated = () => {
       const message = this.state.newMessage;
       this.setState({ newMessage: '' });
       this.channel.sendMessage(message);
+      console.log(this.channel.uniqueName)
     };
 
     newMessageAdded = li => {
@@ -104,7 +120,7 @@ clientInitiated = () => {
                   onChange={this.onMessageChanged}
                   value={this.state.newMessage}
                 />
-                <FlatButton label="Primary" primary={true} />
+                <FlatButton label="Submit" primary={true} onClick = {this.sendMessage}/>
               </form>
             </div>
     )
